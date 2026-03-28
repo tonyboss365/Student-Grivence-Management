@@ -92,8 +92,18 @@ async function initDB() {
       )
     `);
 
-    // Seed departments if missing
-    await pool.query('INSERT IGNORE INTO departments (id, name) VALUES (1, ?), (2, ?), (3, ?), (4, ?)', ['Academic', 'Hostel', 'Infrastructure', 'Finance']);
+    // Seed departments if missing (Expanded List)
+    await pool.query(`
+      INSERT IGNORE INTO departments (id, name) VALUES 
+      (1, 'Academic'), 
+      (2, 'Hostel'), 
+      (3, 'Infrastructure'), 
+      (4, 'Finance'),
+      (5, 'Library'),
+      (6, 'Examination'),
+      (7, 'Transportation'),
+      (8, 'Placement Cell')
+    `);
 
     // Force-seed default staff account for presentation guarantee
     const hashed = bcrypt.hashSync('staff123', 10);

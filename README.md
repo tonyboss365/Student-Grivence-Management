@@ -1,122 +1,151 @@
 # 🏛️ Student Grievance Management System
 
-![Project Logo](./logo.png)
+<p align="center">
+  <img src="./logo.png" width="180" alt="Project Logo">
+</p>
 
-> **A better way to resolve grievances. Transparent, efficient, and fair.**
-> Built with a boutique **'Pastel Glow'** aesthetic and institutional-grade security.
+<p align="center">
+  <b>Elevating Academic Transparency through Modern Engineering.</b><br>
+  Built with React 19, Express, and a custom 'Pastel Glow' Design System.
+</p>
 
 ---
 
 ## 🌟 Vision & Purpose
-The Student Grievance Management System was born from a need for radical transparency in academic administration. No more lost emails or ignored complaints. Every voice is tracked, every issue is logged, and every resolution is finalized.
+The **Student Grievance Management System** is a full-stack institutional solution designed to bridge the communication gap between students and administration. By providing a centralized, secure, and transparent platform, we ensure that every student's concern is heard, tracked, and resolved with professional accountability.
 
-### 🎨 Key Aesthetics
-- **Pastel Glow Palette**: Curated warm tones (Orange, Lavender, Peach) for a premium, inviting feel.
-- **Hand-Drawn Iconography**: Custom hand-drawn aesthetic icons (inspired by Claude) for a human-centric experience.
-- **Anonymity Shield**: A privacy-first approach allowing students to report sensitive issues securely.
-
----
-
-## 🛠️ Technological Foundation
-
-### **Core Stack**
-- **Frontend**: React 19 + TypeScript + Vite
-- **Styling**: Tailwind CSS + Framer Motion (Transitions)
-- **Visuals**: Recharts (Dynamic Analytics)
-- **Backend**: Node.js + Express
-- **Database**: MySQL (Persistent Storage)
-- **Security**: JWT Authentication + Bcrypt Hashing
+### 🎨 Design Philosophy: 'Pastel Glow'
+Our UI isn't just functional; it's an experience.
+- **Calm Palette**: Uses soft oranges, lavenders, and peaches to reduce "grievance anxiety."
+- **Hand-Drawn Aesthetic**: Featuring custom, hand-sketched icons that provide a human, approachable touch to a formal process.
+- **Glassmorphism**: Subtle backdrop blurs and translucent layers for a modern, high-end SaaS feel.
 
 ---
 
-## 🗺️ Architectural Flowcharts
+## 🚀 Interactive Features
 
-### 👤 Student Workflow
+### 👤 Student Experience
+- **Anonymity Shield**: Toggle high-level privacy for sensitive reports.
+- **Live Tracking**: Visual timeline of grievance status from 'Pending' to 'Resolved.'
+- **Help Center**: Integrated FAQ system and direct mail vectors to staff.
+- **Feedback Loop**: Rate resolutions and provide sentiment feedback to improve system quality.
+
+### 👮 Staff & Administrative Oversight
+- **Real-Time Analytics**: High-level heatmaps of department performance and grievance categories.
+- **Audit Logs**: Every status change is timestamped and attributed, creating a perfect chain of accountability.
+- **Departmental Logic**: Intelligent routing of grievances to specific faculty heads.
+- **Privacy Controls**: Admin-level oversight with strict data redaction for anonymous filings.
+
+---
+
+## 🛠️ Technical Architecture
+
+### 💻 Enterprise-Grade Stack
+| Layer | Technology |
+| :--- | :--- |
+| **Frontend** | React 19 (Latest), TypeScript, Vite 6 |
+| **Styling** | Tailwind CSS 4, Framer Motion (Animations) |
+| **Charts** | Recharts (SVG-based dynamic data viz) |
+| **Backend** | Node.js, Express (REST API) |
+| **Database** | MySQL (Pool-based persistent storage) |
+| **Security** | JWT (Stateless Auth), Bcrypt (Password Hashing) |
+
+### 📂 Project Structure
+```text
+├── src/
+│   ├── components/       # Reusable UI & Layout components
+│   │   ├── ui/           # Atomic components (Buttons, Inputs, Logo)
+│   ├── layouts/          # Dashboard & Auth layout wrappers
+│   ├── pages/            # View logic (Student, Staff, Admin views)
+│   ├── context/          # State management (AuthContext)
+│   └── icons/            # Hand-drawn SVG library
+├── server.ts             # Express REST API & Vite dev middleware
+├── render.yaml           # Infrastructure-as-Code for Render
+├── vercel.json           # Serverless config for Vercel
+└── README.md             # This definitive guide
+```
+
+---
+
+## 🗺️ System Logic (Flowcharts)
+
+### **Grievance Lifecycle**
 ```mermaid
 graph TD
-    A[Launch Portal] --> B{Authenticated?}
-    B -- No --> C[Sign Up / Login]
-    B -- Yes --> D[Dashboard]
-    D --> E[Submit Grievance]
-    E --> F[Toggle Anonymity Shield?]
-    F -- Yes --> G[Redacted Submission]
-    F -- No --> H[Standard Submission]
-    G & H --> I[Real-time Ticket Generation]
-    I --> J[Track Progress & Timeline]
+    Start((Launch App)) --> Login{Login?}
+    Login -- Student --> SD[Student Dashboard]
+    Login -- Staff --> SFD[Staff Dashboard]
+    Login -- Admin --> AD[Admin Dashboard]
+    
+    SD --> Create[Submit Grievance]
+    Create --> Privacy{Anonymity?}
+    Privacy -- Yes --> Redact[Redact Identity]
+    Privacy -- No --> Normal[Log Full Profile]
+    
+    Redact & Normal --> Review[Staff Reviewing]
+    Review --> Resolve[Resolution Provided]
+    Resolve --> Rating[Student Rating & Closing]
 ```
 
-### 👮 Staff & Admin Resolution
+### **Administrative Analytics Pipeline**
 ```mermaid
 graph LR
-    A[New Grievance] --> B{Review Route}
-    B --> C[Assign to Department]
-    C --> D[Update Status: In Progress]
-    D --> E[Add Resolution Note]
-    E --> F{Final Resolution}
-    F --> G[Resolved: Notification Sent]
-    F --> H[Rejected: Explanation Logic]
-    G & H --> I[Student Feedback & Rating]
+    Data[(MySQL DB)] --> API[Express API]
+    API --> Stats[KPI Aggregation]
+    Stats --> Chart[Recharts Rendering]
+    Chart --> HeatMap[Departmental Health Analysis]
 ```
 
 ---
 
-## 🚀 Features at a Glance
+## 📦 Zero-Config Installation
 
-### **For Students**
-- **Interactive Dashboards**: Real-time monitoring of active tickets.
-- **Help Center**: Interactive FAQ and direct 'Mail to Staff' integration.
-- **Secure Profiles**: Manage identity and notification preferences.
+### 1. Repository Setup
+```bash
+git clone https://github.com/tonyboss365/Student-Grivence-Management.git
+cd Student-Grivence-Management
+npm install
+```
 
-### **For Staff & Admin**
-- **Advanced Analytics**: Breakdown of resolution rates, department health, and satisfaction scores.
-- **System Oversight**: Holistic view of all institutional pain points.
-- **Grievance Lifecycle**: Complete audit trail (Logs) for transparency.
+### 2. Database Provisioning
+Ensure MySQL is running and create a `.env` file:
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=grievance_db
+JWT_SECRET=production_grade_secret_key
+```
 
----
+### 3. Execution
+```bash
+# Development (with HMR)
+npm run dev
 
-## 📦 Local Installation & Setup
-
-1. **Clone the project**:
-   ```bash
-   git clone https://github.com/tonyboss365/Student-Grivence-Management.git
-   ```
-
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment**:
-   Create a `.env` file in the root:
-   ```env
-   DB_HOST=localhost
-   DB_USER=root
-   DB_PASSWORD=your_password
-   DB_NAME=grievance_db
-   JWT_SECRET=supersecretkey
-   ```
-
-4. **Run Development Server**:
-   ```bash
-   npm run dev
-   ```
+# Production Build
+npm run build
+npm run start
+```
 
 ---
 
-## 🏁 Deployment (Render & Vercel)
+## 🏁 Automated Deployment
 
-This project is optimized for both **Render** and **Vercel**. 
-- **Vercel**: Use the provided `vercel.json` for serverless deployment.
-- **Render**: Use the `render.yaml` for managed MySQL and Web Service orchestration.
-
----
-
-## 👥 Development Team
-- **Akshay** (2420030604@klh.edu.in)
-- **Bhuvan** (2420030135@klh.edu.in)
-- **Girish** (2420030031@klh.edu.in)
-- **Eshwar M** (2420030644@klh.edu.in)
+- **Render (Recommended)**: Use the `render.yaml` Blueprint. It creates your Web Service and Managed MySQL Database automatically in one click.
+- **Vercel**: Optimized for static frontend hosting with `/api` serverless rewrites.
 
 ---
 
-*© 2026 Student Grievance System. Built with passion for better administration.*
+## 👥 The Development Team
+**K L Deemed to be University**
+
+| Name | Student ID | Contact |
+| :--- | :--- | :--- |
+| **Akshay** | 2420030604 | `akshay.2420030604@klh.edu.in` |
+| **Bhuvan** | 2420030135 | `bhuvan.2420030135@klh.edu.in` |
+| **Girish** | 2420030031 | `girish.2420030031@klh.edu.in` |
+| **Eshwar M** | 2420030644 | `eshwar.2420030644@klh.edu.in` |
+
+---
+
+*© 2026 Student Grievance System. Redefining accountability in education.*

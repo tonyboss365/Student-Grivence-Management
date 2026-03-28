@@ -92,17 +92,22 @@ async function initDB() {
       )
     `);
 
-    // Seed default data if empty
-    const [depts]: any = await pool.query('SELECT COUNT(*) as count FROM departments');
-    if (depts[0].count === 0) {
-      await pool.query('INSERT IGNORE INTO departments (name) VALUES (?), (?), (?), (?)', ['Academic', 'Hostel', 'Infrastructure', 'Finance']);
-      const hashed = bcrypt.hashSync('staff123', 10);
-      await pool.query('INSERT IGNORE INTO users (name, email, password, role, department_id) VALUES (?, ?, ?, ?, ?)', ['Staff User', 'staff@example.com', hashed, 'staff', 1]);
-      const studentHashed = bcrypt.hashSync('student123', 10);
-      await pool.query('INSERT IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Student User', 'student@example.com', studentHashed, 'student']);
-    }
+    // Seed departments if missing
+    await pool.query('INSERT IGNORE INTO departments (id, name) VALUES (1, ?), (2, ?), (3, ?), (4, ?)', ['Academic', 'Hostel', 'Infrastructure', 'Finance']);
 
-    console.log('Master Key Database connected successfully.');
+    // Force-seed default staff account for presentation guarantee
+    const hashed = bcrypt.hashSync('staff123', 10);
+    await pool.query(`
+      INSERT INTO users (name, email, password, role, department_id) 
+      VALUES (?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE password = ?, role = 'staff', department_id = 1
+    `, ['Staff User', 'staff@example.com', hashed, 'staff', 1, hashed]);
+
+    // Seed student account if missing
+    const studentHashed = bcrypt.hashSync('student123', 10);
+    await pool.query('INSERT IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Student User', 'student@example.com', studentHashed, 'student']);
+
+    console.log('Master Key Database connected and credentials Force-Synced.');
   } catch (err) {
     console.error('CRITICAL: Master Key Connection Failed:', err);
   }

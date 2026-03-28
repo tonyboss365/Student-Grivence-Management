@@ -1,39 +1,17 @@
 services:
-  # MySQL Database Instance
-  - type: database
-    databaseName: grievance_db
-    user: avnadmin
-    plan: free # Change to 'starter' for production persistence
-
-  # Full-Stack Web Service (Express + Vite)
   - type: web
     name: student-grievance-system
     env: node
-    plan: free
     buildCommand: npm install && npm run build
     startCommand: npm run start
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DB_HOST
-        fromDatabase:
-          name: grievance_db
-          property: host
-      - key: DB_USER
-        fromDatabase:
-          name: grievance_db
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: grievance_db
-          property: password
-      - key: DB_NAME
-        fromDatabase:
-          name: grievance_db
-          property: database
-      - key: DB_PORT
-        fromDatabase:
-          name: grievance_db
-          property: port
       - key: JWT_SECRET
         generateValue: true
+      - key: PORT
+        value: 3000
+    disk:
+      name: sqlite-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

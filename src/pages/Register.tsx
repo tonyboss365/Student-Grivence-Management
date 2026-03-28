@@ -32,7 +32,15 @@ export default function Register() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password, role: 'student' })
       });
-      const data = await res.json();
+      
+      const contentType = res.headers.get('content-type');
+      let data;
+      
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        throw new Error('Server communication error. Please ensure your Database is running and accessible.');
+      }
       
       await minWait;
 

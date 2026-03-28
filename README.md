@@ -117,15 +117,24 @@ DB_NAME=grievance_db
 JWT_SECRET=production_grade_secret_key
 ```
 
-### 3. Execution
+### 4. Run Development Server
 ```bash
-# Development (with HMR)
 npm run dev
-
-# Production Build
-npm run build
-npm run start
 ```
+
+---
+
+## 🆘 Troubleshooting: "Unexpected Token A" Error
+
+If you see a red error box saying **"Unexpected token 'A'..."**, it means your local server cannot connect to your database. 
+
+### **How to Fix it in 1 Minute:**
+1. **Rename the Template**: Find the file `.env.example` in this folder and rename it to exactly `.env`.
+2. **Auto-Configured**: I have already pre-filled the `.env.example` with your **TiDB Cloud** credentials! Once renamed, it will work instantly.
+3. **Restart the Server**: Close your terminal and run `npm run dev` again.
+
+> [!TIP]
+> **No Local MySQL?** No problem! By putting your TiDB Cloud credentials into your local `.env` file, you can test the app on your own computer while using the cloud database in Singapore.
 
 ---
 

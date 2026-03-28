@@ -543,7 +543,8 @@ async function startServer() {
       console.log(`Server running on http://localhost:${PORT}`);
     });
   }
+
+  return app;
 }
 
-const start = await startServer();
-export default start;
+export default await startServer();

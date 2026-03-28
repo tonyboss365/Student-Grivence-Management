@@ -34,8 +34,11 @@ async function initDB() {
     await initialPool.end();
   }
 
+  const useSSL = dbConfig.host !== 'localhost';
+  
   pool = mysql.createPool({
     ...dbConfig,
+    ssl: useSSL ? { rejectUnauthorized: false } : undefined,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0

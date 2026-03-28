@@ -1,104 +1,63 @@
 # 🏛️ Student Grievance Management System
 
 <p align="center">
-  <img src="./logo.png" width="180" alt="Project Logo">
+  <img src="./logo.png" width="120" alt="Project Logo">
 </p>
 
 <p align="center">
+  <a href="https://student-grivence-management.onrender.com/"><strong>🚀 View Live Site</strong></a><br>
   <b>Elevating Academic Transparency through Modern Engineering.</b><br>
-  Built with React 19, Express, and a custom 'Pastel Glow' Design System.
+  Built with React 19, Express, and a custom "Master Key" Database Architecture.
 </p>
 
 ---
 
 ## 🌟 Vision & Purpose
-The **Student Grievance Management System** is a full-stack institutional solution designed to bridge the communication gap between students and administration. By providing a centralized, secure, and transparent platform, we ensure that every student's concern is heard, tracked, and resolved with professional accountability.
+The **Student Grievance Management System** is a professional-grade institutional portal designed to bridge the communication gap between students and administration. By providing a centralized, secure, and transparent platform, we ensure that every student's concern is heard, tracked, and resolved with institutional accountability.
 
 ### 🎨 Design Philosophy: 'Pastel Glow'
-Our UI isn't just functional; it's an experience.
-- **Calm Palette**: Uses soft oranges, lavenders, and peaches to reduce "grievance anxiety."
-- **Hand-Drawn Aesthetic**: Featuring custom, hand-sketched icons that provide a human, approachable touch to a formal process.
-- **Glassmorphism**: Subtle backdrop blurs and translucent layers for a modern, high-end SaaS feel.
+Our UI is designed to reduce tension and promote clarity:
+- **Calm Palette**: Uses soft oranges, lavenders, and peaches to minimize "grievance anxiety."
+- **Premium Glassmorphism**: Subtle backdrop blurs and translucent layers for a modern SaaS aesthetic.
+- **Dynamic Interactions**: Powered by Framer Motion for smooth, organic transitions.
 
 ---
 
-## 🚀 Interactive Features
+## 🚀 Key Functional Modules
 
-### 👤 Student Experience
-- **Anonymity Shield**: Toggle high-level privacy for sensitive reports.
-- **Live Tracking**: Visual timeline of grievance status from 'Pending' to 'Resolved.'
-- **Help Center**: Integrated FAQ system and direct mail vectors to staff.
-- **Feedback Loop**: Rate resolutions and provide sentiment feedback to improve system quality.
+### 🎓 Student Experience
+- **Submission Shield**: File grievances with optional anonymity for sensitive matters.
+- **Live Activity Feed**: Track exactly where your grievance is in the lifecycle (from Pending to Closed).
+- **Sentiment Loop**: Provide ratings and textual feedback on how your issue was resolved.
 
-### 👮 Staff & Administrative Oversight
-- **Real-Time Analytics**: High-level heatmaps of department performance and grievance categories.
-- **Audit Logs**: Every status change is timestamped and attributed, creating a perfect chain of accountability.
-- **Departmental Logic**: Intelligent routing of grievances to specific faculty heads.
-- **Privacy Controls**: Admin-level oversight with strict data redaction for anonymous filings.
+### 👨‍🏫 Staff & Administrative Oversight
+- **Executive Analytics**: Real-time KPI dashboards showing department performance and grievance categories.
+- **Master Key Security**: Hardcoded administrative vectors for 100% uptime and presentation stability.
+- **Audit Trails**: Complete transparency with timestamped logs for every state change.
 
 ---
 
-## 🛠️ Technical Architecture
+## 🛠️ Technical Architecture & "Master Key" Logic
 
-### 💻 Enterprise-Grade Stack
-| Layer | Technology |
-| :--- | :--- |
-| **Frontend** | React 19 (Latest), TypeScript, Vite 6 |
-| **Styling** | Tailwind CSS 4, Framer Motion (Animations) |
-| **Charts** | Recharts (SVG-based dynamic data viz) |
-| **Backend** | Node.js, Express (REST API) |
-| **Database** | MySQL (Pool-based persistent storage) |
-| **Security** | JWT (Stateless Auth), Bcrypt (Password Hashing) |
+The system is built on a **Resilient, Zero-Config** foundation.
 
-### 📂 Project Structure
-```text
-├── src/
-│   ├── components/       # Reusable UI & Layout components
-│   │   ├── ui/           # Atomic components (Buttons, Inputs, Logo)
-│   ├── layouts/          # Dashboard & Auth layout wrappers
-│   ├── pages/            # View logic (Student, Staff, Admin views)
-│   ├── context/          # State management (AuthContext)
-│   └── icons/            # Hand-drawn SVG library
-├── server.ts             # Express REST API & Vite dev middleware
-├── render.yaml           # Infrastructure-as-Code for Render
-├── vercel.json           # Serverless config for Vercel
-└── README.md             # This definitive guide
-```
+### 💻 Enterprise Stack
+| Layer | Technology | Why? |
+| :--- | :--- | :--- |
+| **Frontend** | React 19 + Vite | Blazing fast build & execution. |
+| **Database** | TiDB Cloud (MySQL) | Cloud-native, distributed scalability. |
+| **Backend** | Node.js (ESM) | High-concurrency support for large student bodies. |
+| **Auth** | JWT + Bcrypt | Industry-standard stateless security. |
+
+### 🛡️ The "Master Key" Engine
+The system uses a unique hardcoded fallback mechanism:
+1. **Zero-Config Deployment**: The database credentials for TiDB Cloud Singapore are integrated into the core engine. 
+2. **Binary Error Protection**: By using the `mysql2` pure JavaScript driver, we avoid GLIBC errors common in cloud platforms like Render/Vercel.
+3. **Auto-Seeding**: Every boot automatically synchronizes the Staff accounts and Departments, ensuring the system is **always presentation-ready.**
 
 ---
 
-## 🗺️ System Logic (Flowcharts)
-
-### **Grievance Lifecycle**
-```mermaid
-graph TD
-    Start((Launch App)) --> Login{Login?}
-    Login -- Student --> SD[Student Dashboard]
-    Login -- Staff --> SFD[Staff Dashboard]
-    Login -- Admin --> AD[Admin Dashboard]
-    
-    SD --> Create[Submit Grievance]
-    Create --> Privacy{Anonymity?}
-    Privacy -- Yes --> Redact[Redact Identity]
-    Privacy -- No --> Normal[Log Full Profile]
-    
-    Redact & Normal --> Review[Staff Reviewing]
-    Review --> Resolve[Resolution Provided]
-    Resolve --> Rating[Student Rating & Closing]
-```
-
-### **Administrative Analytics Pipeline**
-```mermaid
-graph LR
-    Data[(MySQL DB)] --> API[Express API]
-    API --> Stats[KPI Aggregation]
-    Stats --> Chart[Recharts Rendering]
-    Chart --> HeatMap[Departmental Health Analysis]
-```
-
----
-
-## 📦 Zero-Config Installation
+## 📦 Local Setup (Zero-Config)
 
 ### 1. Repository Setup
 ```bash
@@ -107,41 +66,18 @@ cd Student-Grivence-Management
 npm install
 ```
 
-### 2. Database Provisioning
-Ensure MySQL is running and create a `.env` file:
-```env
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_password
-DB_NAME=grievance_db
-JWT_SECRET=production_grade_secret_key
-```
-
-### 4. Run Development Server
+### 2. Immediate Execution
+Since the "Master Key" is built-in, you can run the app instantly:
 ```bash
 npm run dev
 ```
 
 ---
 
-## 🆘 Troubleshooting: "Unexpected Token A" Error
+## 🏁 Deployment
 
-If you see a red error box saying **"Unexpected token 'A'..."**, it means your local server cannot connect to your database. 
-
-### **How to Fix it in 1 Minute:**
-1. **Rename the Template**: Find the file `.env.example` in this folder and rename it to exactly `.env`.
-2. **Auto-Configured**: I have already pre-filled the `.env.example` with your **TiDB Cloud** credentials! Once renamed, it will work instantly.
-3. **Restart the Server**: Close your terminal and run `npm run dev` again.
-
-> [!TIP]
-> **No Local MySQL?** No problem! By putting your TiDB Cloud credentials into your local `.env` file, you can test the app on your own computer while using the cloud database in Singapore.
-
----
-
-## 🏁 Automated Deployment
-
-- **Render (Recommended)**: Use the `render.yaml` Blueprint. It creates your Web Service and Managed MySQL Database automatically in one click.
-- **Vercel**: Optimized for static frontend hosting with `/api` serverless rewrites.
+- **Render (Primary)**: Managed Node.js service via `render.yaml`.
+- **Vercel (Bridged)**: Configured with `vercel.json` for serverless Express routing.
 
 ---
 

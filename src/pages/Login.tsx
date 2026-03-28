@@ -208,7 +208,7 @@ export default function Login() {
                        <span className="text-[#888880]">Staff Vector:</span>
                        <code className="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">staff@example.com / staff123</code>
                     </div>
-                    <p className="text-[9px] text-[#A1A1AA] italic">Note: Staff accounts are managed by the institution and cannot be created manually.</p>
+                    <p className="text-[9px] text-[#A1A1AA] italic">Note: Use this Staff account only. No other staff accounts can be created manually.</p>
                   </div>
 
                   <div className="space-y-1">
@@ -216,10 +216,11 @@ export default function Login() {
                        <span className="text-[#888880]">Default Student:</span>
                        <code className="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">student@example.com / student123</code>
                     </div>
-                    <p className="text-[9px] text-[#A1A1AA] italic">Note: Additional student accounts can be created via the registration link below.</p>
+                    <p className="text-[9px] text-[#A1A1AA] italic">Note: New student accounts can be created by clicking 'Create one' below.</p>
                   </div>
                </div>
             </div>
+
 
           </div>
         </motion.div>

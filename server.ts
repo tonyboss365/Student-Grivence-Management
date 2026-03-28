@@ -164,12 +164,27 @@ async function initDB() {
 }
 
 async function startServer() {
-  await initDB();
-
   const app = express();
   const PORT = Number(process.env.PORT) || 3000;
-
   app.use(express.json());
+
+  try {
+    await initDB();
+    console.log('Database initialized successfully.');
+  } catch (err) {
+    console.error('DATABASE INITIALIZATION FAILED:', err);
+    console.log('Server is running, but database features will be disabled until fixed.');
+  }
+
+  // Database Connection Safety Middleware
+  app.use('/api', (req, res, next) => {
+    if (!pool) {
+      return res.status(503).json({ 
+        error: 'Database connection failed. Please check your credentials and ensure MySQL is running.' 
+      });
+    }
+    next();
+  });
 
   // --- API Routes ---
 

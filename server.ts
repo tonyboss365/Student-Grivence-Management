@@ -2,112 +2,119 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import sqlite3 from 'sqlite3';
-import { open, Database } from 'sqlite';
+import mysql, { Pool } from 'mysql2/promise';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import fs from 'fs/promises';
 import { existsSync, writeFileSync } from 'fs';
-import { nanoid } from 'nanoid';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- High-Availability Persistent Storage Path ---
-const RENDER_DISK_PATH = '/opt/render/project/src/data';
-const DATA_DIR = existsSync(RENDER_DISK_PATH) ? RENDER_DISK_PATH : __dirname;
-const DB_FILE = path.join(DATA_DIR, 'database.sqlite');
-
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey';
 
-// --- SQLite Zero-Config Database initialization ---
-let sqliteDb: Database;
+// --- ABSOLUTE ZERO-CONFIG: The "Master Key" Credentials ---
+const MASTER_DB_CONFIG = {
+  host: process.env.DB_HOST || 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com',
+  port: parseInt(process.env.DB_PORT || '4000'),
+  user: process.env.DB_USER || '2ZPYoETsDzM5m9n.root',
+  password: process.env.DB_PASSWORD || '1hykRxGw13Lh33zH',
+  database: process.env.DB_NAME || 'test',
+  ssl: { rejectUnauthorized: false }
+};
 
-async function initSqlite() {
-  sqliteDb = await open({
-    filename: DB_FILE,
-    driver: sqlite3.Database
+let pool: Pool;
+
+async function initDB() {
+  pool = mysql.createPool({
+    ...MASTER_DB_CONFIG,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
   });
 
-  // Create core tables
-  await sqliteDb.exec(`
-    CREATE TABLE IF NOT EXISTS departments (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL UNIQUE
-    );
+  // Verify connection and create core tables if missing
+  try {
+    // Create core tables
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS departments (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL UNIQUE
+      )
+    `);
 
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      email TEXT NOT NULL UNIQUE,
-      password TEXT NOT NULL,
-      role TEXT CHECK(role IN ('student', 'staff', 'admin')) NOT NULL,
-      department_id INTEGER,
-      FOREIGN KEY (department_id) REFERENCES departments(id)
-    );
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        role ENUM('student', 'staff', 'admin') NOT NULL,
+        department_id INT,
+        FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE SET NULL
+      )
+    `);
 
-    CREATE TABLE IF NOT EXISTS grievances (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      ticket_id TEXT NOT NULL UNIQUE,
-      student_id INTEGER NOT NULL,
-      department_id INTEGER NOT NULL,
-      category TEXT NOT NULL,
-      title TEXT NOT NULL,
-      description TEXT NOT NULL,
-      contact_email TEXT,
-      contact_phone TEXT,
-      is_anonymous BOOLEAN DEFAULT 0,
-      status TEXT CHECK(status IN ('pending', 'in_progress', 'resolved', 'closed')) DEFAULT 'pending',
-      student_rating INTEGER,
-      student_feedback TEXT,
-      resolution_note TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (student_id) REFERENCES users(id),
-      FOREIGN KEY (department_id) REFERENCES departments(id)
-    );
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS grievances (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        ticket_id VARCHAR(50) UNIQUE NOT NULL,
+        student_id INT NOT NULL,
+        department_id INT NOT NULL,
+        category VARCHAR(255) NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        description TEXT NOT NULL,
+        contact_email VARCHAR(255),
+        contact_phone VARCHAR(50),
+        status ENUM('pending', 'in_progress', 'resolved', 'closed') NOT NULL DEFAULT 'pending',
+        is_anonymous TINYINT(1) NOT NULL DEFAULT 0,
+        resolution_note TEXT,
+        student_rating INT,
+        student_feedback TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE CASCADE
+      )
+    `);
 
-    CREATE TABLE IF NOT EXISTS grievance_logs (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      grievance_id INTEGER NOT NULL,
-      status_from TEXT,
-      status_to TEXT NOT NULL,
-      changed_by INTEGER NOT NULL,
-      note TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (grievance_id) REFERENCES grievances(id),
-      FOREIGN KEY (changed_by) REFERENCES users(id)
-    );
-  `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS grievance_logs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        grievance_id INT NOT NULL,
+        status_from VARCHAR(50),
+        status_to VARCHAR(50) NOT NULL,
+        changed_by INT NOT NULL,
+        note TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (grievance_id) REFERENCES grievances(id) ON DELETE CASCADE,
+        FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE CASCADE
+      )
+    `);
 
-  // Seed default data if empty
-  const deptsCount: any = await sqliteDb.get('SELECT COUNT(*) as count FROM departments');
-  if (deptsCount.count === 0) {
-    await sqliteDb.run('INSERT INTO departments (name) VALUES (?), (?), (?), (?)', ['Academic', 'Hostel', 'Infrastructure', 'Finance']);
-    const hashed = bcrypt.hashSync('staff123', 10);
-    await sqliteDb.run('INSERT INTO users (name, email, password, role, department_id) VALUES (?, ?, ?, ?, ?)', ['Staff User', 'staff@example.com', hashed, 'staff', 1]);
-    const studentHashed = bcrypt.hashSync('student123', 10);
-    await sqliteDb.run('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Student User', 'student@example.com', studentHashed, 'student']);
+    // Seed default data if empty
+    const [depts]: any = await pool.query('SELECT COUNT(*) as count FROM departments');
+    if (depts[0].count === 0) {
+      await pool.query('INSERT IGNORE INTO departments (name) VALUES (?), (?), (?), (?)', ['Academic', 'Hostel', 'Infrastructure', 'Finance']);
+      const hashed = bcrypt.hashSync('staff123', 10);
+      await pool.query('INSERT IGNORE INTO users (name, email, password, role, department_id) VALUES (?, ?, ?, ?, ?)', ['Staff User', 'staff@example.com', hashed, 'staff', 1]);
+      const studentHashed = bcrypt.hashSync('student123', 10);
+      await pool.query('INSERT IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Student User', 'student@example.com', studentHashed, 'student']);
+    }
+
+    console.log('Master Key Database connected successfully.');
+  } catch (err) {
+    console.error('CRITICAL: Master Key Connection Failed:', err);
   }
 }
 
-// --- Safemode Database Proxy (Now redirected to SQLite for 100% success) ---
+// --- Safemode Database Proxy (Now fully unified with MySQL Master Key) ---
 const db = {
   async query(sql: string, params: any[] = []): Promise<[any, any]> {
-    // Convert MySQL style '?' to SQLite style (they match usually)
-    // We use sqliteDb.all for SELECT and run for others
-    const isSelect = sql.trim().toUpperCase().startsWith('SELECT');
-    
     try {
-      if (isSelect) {
-        const rows = await sqliteDb.all(sql, params);
-        return [rows, null];
-      } else {
-        const result = await sqliteDb.run(sql, params);
-        return [{ insertId: result.lastID, affectedRows: result.changes }, null];
-      }
+      return await pool.query(sql, params);
     } catch (err: any) {
-      console.error('SQLite Error:', err);
+      console.error('Database Error:', err);
       throw err;
     }
   }
@@ -121,7 +128,7 @@ async function startServer() {
 
   // Database Connection Safety Middleware
   app.use('/api', (req, res, next) => {
-    if (!sqliteDb) {
+    if (!pool) {
       return res.status(503).json({ 
         error: 'Database is still initializing. Please refresh in a moment.' 
       });
@@ -129,9 +136,9 @@ async function startServer() {
     next();
   });
 
-  // Zero-Config Cloud/Local Initialization
-  initSqlite()
-    .then(() => console.log('SQLite Database initialized successfully (Zero-Config mode).'))
+  // Zero-Config "Master Key" Initialization
+  initDB()
+    .then(() => console.log('Master Key Database initialized successfully.'))
     .catch(err => {
       console.error('CRITICAL: DATABASE INITIALIZATION FAILED:', err);
     });

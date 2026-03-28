@@ -192,7 +192,7 @@ async function startServer() {
         user: { id: result.insertId, name, email, role: 'student' } 
       });
     } catch (error: any) {
-      if (error.code === 'ER_DUP_ENTRY') {
+      if (error.message && error.message.includes('UNIQUE constraint failed')) {
         res.status(400).json({ error: 'Email already exists' });
       } else {
         console.error(error);
@@ -282,7 +282,7 @@ async function startServer() {
       `, queryParams);
 
       const [avgTimeResult]: any = await db.query(`
-        SELECT AVG(TIMESTAMPDIFF(HOUR, created_at, updated_at)) as avg_hours 
+        SELECT AVG((julianday(updated_at) - julianday(created_at)) * 24) as avg_hours 
         FROM grievances 
         WHERE status = 'resolved' AND ${baseWhere}
       `, queryParams);
@@ -390,7 +390,7 @@ async function startServer() {
       
       // Calculate avg resolution time in hours
       const [avgRes]: any = await db.query(`
-        SELECT AVG(TIMESTAMPDIFF(HOUR, g.created_at, l.created_at)) as avgHours
+        SELECT AVG((julianday(l.created_at) - julianday(g.created_at)) * 24) as avgHours
         FROM grievances g
         JOIN grievance_logs l ON g.id = l.grievance_id
         WHERE l.status_to = 'resolved'
@@ -448,7 +448,7 @@ async function startServer() {
       await db.query(query, params);
       res.json({ success: true, message: 'Settings updated successfully' });
     } catch (error: any) {
-      if (error.code === 'ER_DUP_ENTRY') {
+      if (error.message && error.message.includes('UNIQUE constraint failed')) {
         res.status(400).json({ error: 'Email already exists' });
       } else {
         res.status(500).json({ error: 'Internal server error' });

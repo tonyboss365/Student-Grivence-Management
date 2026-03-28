@@ -2,7 +2,7 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import mysql, { Pool } from 'mysql2/promise';
+import mysql from 'mysql2/promise';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import fs from 'fs/promises';
@@ -23,7 +23,7 @@ const MASTER_DB_CONFIG = {
   ssl: { rejectUnauthorized: false }
 };
 
-let pool: Pool;
+let pool: any;
 
 async function initDB() {
   pool = mysql.createPool({

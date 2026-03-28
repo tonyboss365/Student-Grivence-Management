@@ -192,12 +192,32 @@ export default function Login() {
             </Button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-[#6B6B66] dark:text-[#A1A1AA]">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-[#111110] dark:text-[#FDFCF8] font-medium hover:underline underline-offset-4">
-              Create one
-            </Link>
-          </p>
+          <div className="mt-8 pt-8 border-t border-[#E5E3D9] dark:border-[#333333]">
+            <p className="text-center text-sm text-[#6B6B66] dark:text-[#A1A1AA] mb-4">
+              Don't have an account?{' '}
+              <Link to="/register" className="text-[#111110] dark:text-[#FDFCF8] font-medium hover:underline underline-offset-4">
+                Create one
+              </Link>
+            </p>
+
+            <div className="p-5 bg-[#F2D5D9]/20 dark:bg-[#F2D5D9]/10 rounded-2xl border border-[#F2D5D9]/30">
+               <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#111110] dark:text-[#FDFCF8] mb-3">Institutional Roles (Demo)</h3>
+               <div className="space-y-3">
+                  <div className="flex justify-between items-center text-[11px]">
+                     <span className="text-[#888880]">Admin Vector:</span>
+                     <code className="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">admin@example.com / admin123</code>
+                  </div>
+                  <div className="flex justify-between items-center text-[11px]">
+                     <span className="text-[#888880]">Staff Vector:</span>
+                     <code className="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">staff@example.com / staff123</code>
+                  </div>
+                  <div className="flex justify-between items-center text-[11px]">
+                     <span className="text-[#888880]">Default Student:</span>
+                     <code className="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">student@example.com / student123</code>
+                  </div>
+               </div>
+            </div>
+          </div>
         </motion.div>
       </div>
     </div>

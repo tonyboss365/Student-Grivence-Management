@@ -202,21 +202,25 @@ export default function Login() {
 
             <div className="p-5 bg-[#F2D5D9]/20 dark:bg-[#F2D5D9]/10 rounded-2xl border border-[#F2D5D9]/30">
                <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#111110] dark:text-[#FDFCF8] mb-3">Institutional Roles (Demo)</h3>
-               <div className="space-y-3">
-                  <div className="flex justify-between items-center text-[11px]">
-                     <span className="text-[#888880]">Admin Vector:</span>
-                     <code className="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">admin@example.com / admin123</code>
+               <div className="space-y-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between items-center text-[11px]">
+                       <span className="text-[#888880]">Staff Vector:</span>
+                       <code className="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">staff@example.com / staff123</code>
+                    </div>
+                    <p className="text-[9px] text-[#A1A1AA] italic">Note: Staff accounts are managed by the institution and cannot be created manually.</p>
                   </div>
-                  <div className="flex justify-between items-center text-[11px]">
-                     <span className="text-[#888880]">Staff Vector:</span>
-                     <code className="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">staff@example.com / staff123</code>
-                  </div>
-                  <div className="flex justify-between items-center text-[11px]">
-                     <span className="text-[#888880]">Default Student:</span>
-                     <code className="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">student@example.com / student123</code>
+
+                  <div className="space-y-1">
+                    <div className="flex justify-between items-center text-[11px]">
+                       <span className="text-[#888880]">Default Student:</span>
+                       <code className="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">student@example.com / student123</code>
+                    </div>
+                    <p className="text-[9px] text-[#A1A1AA] italic">Note: Additional student accounts can be created via the registration link below.</p>
                   </div>
                </div>
             </div>
+
           </div>
         </motion.div>
       </div>

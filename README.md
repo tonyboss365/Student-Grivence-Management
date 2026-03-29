@@ -4,7 +4,7 @@
   <img src="./logo.png" width="100" alt="Project Logo">
 </p>
 
-## Live Link
+## Live Link(compatable only with laptop,pc,mac)
 [https://student-grivence-management.onrender.com/](https://student-grivence-management.onrender.com/)
 
 ---
